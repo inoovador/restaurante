@@ -1,0 +1,56 @@
+1. Módulo de Sala o Front of House (FOH)
+Es la cara visible del negocio, donde se atiende directamente al cliente.
+
+Comedor: El área principal con mesas y sillas donde los comensales disfrutan de su comida y bebida.
+
+Barra: El espacio dedicado a la preparación y servicio de bebidas (cócteles, licores, cervezas, etc.). Funciona tanto para el servicio al comedor como para clientes que se sientan directamente en ella.
+
+Recepción: La zona de bienvenida donde se gestionan las reservas, se asignan las mesas y se da la primera impresión del lugar.
+
+Área de espera: Un espacio cómodo para los clientes que aguardan por una mesa.
+
+Baños: Un módulo indispensable que debe mantenerse impecable para garantizar una buena experiencia al cliente.
+
+2. Módulo de Cocina o Back of House (BOH)
+Es el corazón del restaurante, donde se lleva a cabo toda la producción de alimentos.
+
+Área de Pre-preparación (Mise en Place): Zona para lavar, cortar y porcionar los ingredientes antes de la cocción.
+
+Área de Cocción: Equipada con estufas, hornos, parrillas y freidoras para la preparación de los platos calientes.
+
+Área Fría (Garde Manger): Dedicada a la preparación de platos fríos como ensaladas, sándwiches y postres.
+
+Paso de Platos (Pase): El punto de encuentro entre la cocina y la sala. Aquí se emplatan y se revisan los platos antes de que los meseros los lleven a la mesa.
+
+Área de Lavado (Steward): Módulo para la limpieza de la vajilla, cristalería, cubertería y utensilios de cocina.
+
+3. Módulo de Almacén y Logística
+Es crucial para el control de inventarios y la gestión de insumos.
+
+Área de Recepción: Lugar donde los proveedores entregan los productos. Se debe verificar la calidad y cantidad de la mercancía.
+
+Almacén Seco: Espacio para guardar productos no perecederos como latas, cereales, harinas y envasados.
+
+Almacén Refrigerado y Congelado: Cámaras y neveras para conservar carnes, lácteos, frutas, verduras y otros productos perecederos a la temperatura adecuada.
+
+Bodega de Licores: Espacio para almacenar de forma segura las botellas de vino, licores y otras bebidas alcohólicas.
+
+4. Módulo de Gestión y Administración
+Aunque no son áreas físicas para el cliente, son esenciales para el funcionamiento del negocio.
+
+Oficina: El espacio para la administración, contabilidad, gestión de personal y planificación.
+
+Caja y TPV (Terminal Punto de Venta): El sistema para procesar los pagos de los clientes y registrar las ventas. En los bares, a menudo está integrado en la barra.
+
+Área de Personal: Vestuarios y baños para los empleados, que deben estar separados de los de los clientes.
+
+5. Módulo de Servicio
+Este módulo se refiere a los procesos de interacción con el cliente.
+
+Reservas y Gestión de Mesas: El proceso de tomar y organizar las reservas para optimizar la ocupación del restaurante.
+
+Toma de Pedidos: El sistema que utiliza el personal para registrar las órdenes de los clientes y comunicarlas a la cocina y el bar.
+
+Cobro y Facturación: El procedimiento para generar la cuenta y procesar el pago de manera eficiente.
+
+Atención al Cliente: La gestión de la experiencia del cliente, desde la bienvenida hasta la despedida, incluyendo la resolución de cualquier problema o queja
