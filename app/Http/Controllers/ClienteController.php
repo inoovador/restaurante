@@ -11,11 +11,19 @@ class ClienteController extends Controller
     public function index()
     {
         $clientes = DB::table('clientes')
-            ->orderBy('nombre')
+            ->orderBy('created_at', 'desc')
+            ->limit(100)
             ->get();
 
-        return Inertia::render('Clientes/Index', [
-            'clientes' => $clientes
+        $stats = [
+            'total' => DB::table('clientes')->count(),
+            'nuevos' => DB::table('clientes')->where('created_at', '>=', now()->subDays(7))->count(),
+            'frecuentes' => DB::table('clientes')->where('visitas', '>=', 5)->count(),
+        ];
+
+        return view('clientes.index', [
+            'clientes' => $clientes,
+            'stats' => $stats
         ]);
     }
 }

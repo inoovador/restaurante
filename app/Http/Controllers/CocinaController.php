@@ -50,9 +50,30 @@ class CocinaController extends Controller
             ->orderBy('ventas.created_at', 'asc')
             ->get();
 
-        return Inertia::render('Cocina/Index', [
+        $stats = [
+            'pendientes' => $pedidosPendientes->count(),
+            'en_preparacion' => $pedidosEnPreparacion->count(),
+            'listos' => DB::table('ventas_detalle')
+                ->join('productos', 'ventas_detalle.producto_id', '=', 'productos.id')
+                ->join('categorias', 'productos.categoria_id', '=', 'categorias.id')
+                ->where('ventas_detalle.estado_cocina', 'listo')
+                ->where('categorias.area', 'cocina')
+                ->whereDate('ventas_detalle.updated_at', now()->toDateString())
+                ->count(),
+            'completados_hoy' => DB::table('ventas_detalle')
+                ->join('ventas', 'ventas_detalle.venta_id', '=', 'ventas.id')
+                ->join('productos', 'ventas_detalle.producto_id', '=', 'productos.id')
+                ->join('categorias', 'productos.categoria_id', '=', 'categorias.id')
+                ->where('ventas_detalle.estado_cocina', 'entregado')
+                ->where('categorias.area', 'cocina')
+                ->whereDate('ventas.created_at', now()->toDateString())
+                ->count(),
+        ];
+
+        return view('cocina.index', [
             'pedidosPendientes' => $pedidosPendientes,
-            'pedidosEnPreparacion' => $pedidosEnPreparacion
+            'pedidosEnPreparacion' => $pedidosEnPreparacion,
+            'stats' => $stats
         ]);
     }
 }

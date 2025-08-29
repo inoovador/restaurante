@@ -2,23 +2,37 @@
 
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('welcome');
+    return redirect('/login');
 })->name('home');
+
+// Las rutas de autenticación están en routes/auth.php
+
+// API Routes para el carrito (sin autenticación para pruebas)
+Route::prefix('api')->group(function () {
+    Route::post('/ventas', [\App\Http\Controllers\VentaController::class, 'storeAjax']);
+    Route::get('/ventas/historial', [\App\Http\Controllers\VentaController::class, 'historial']);
+});
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('dashboard/export', [DashboardController::class, 'export'])->name('dashboard.export');
     
-    // Módulos del Restaurante
+    // Categorías
     Route::get('/categorias', [\App\Http\Controllers\CategoriaController::class, 'index'])->name('categorias.index');
+    Route::post('/categorias', [\App\Http\Controllers\CategoriaController::class, 'store'])->name('categorias.store');
+    Route::put('/categorias/{id}', [\App\Http\Controllers\CategoriaController::class, 'update'])->name('categorias.update');
+    Route::delete('/categorias/{id}', [\App\Http\Controllers\CategoriaController::class, 'destroy'])->name('categorias.destroy');
     
     // Productos
     Route::get('/productos', [\App\Http\Controllers\ProductoController::class, 'index'])->name('productos.index');
     Route::post('/productos', [\App\Http\Controllers\ProductoController::class, 'store'])->name('productos.store');
     Route::put('/productos/{id}', [\App\Http\Controllers\ProductoController::class, 'update'])->name('productos.update');
     Route::delete('/productos/{id}', [\App\Http\Controllers\ProductoController::class, 'destroy'])->name('productos.destroy');
+    Route::post('/productos/{id}/imagen', [\App\Http\Controllers\ProductoController::class, 'updateImage'])->name('productos.updateImage');
     
     // Mesas
     Route::get('/mesas', [\App\Http\Controllers\MesaController::class, 'index'])->name('mesas.index');
@@ -27,6 +41,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Ventas (POS)
     Route::get('/ventas', [\App\Http\Controllers\VentaController::class, 'index'])->name('ventas.index');
     Route::post('/ventas', [\App\Http\Controllers\VentaController::class, 'store'])->name('ventas.store');
+    Route::post('/ventas/{id}/completar', [\App\Http\Controllers\VentaController::class, 'completarVenta'])->name('ventas.completar');
     
     // Usuarios y Roles
     Route::get('/usuarios', [\App\Http\Controllers\UsuarioController::class, 'index'])->name('usuarios.index');

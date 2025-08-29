@@ -25,9 +25,15 @@ class RolesController extends Controller
             'inventario' => 'Control de Inventario'
         ];
 
-        return Inertia::render('Roles/Index', [
+        $stats = [
+            'total' => $roles->count(),
+            'activos' => $roles->where('activo', true)->count(),
+        ];
+
+        return view('roles.index', [
             'roles' => $roles,
-            'permisos' => $permisos
+            'permisos' => $permisos,
+            'stats' => $stats
         ]);
     }
 }

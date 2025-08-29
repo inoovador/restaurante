@@ -27,9 +27,17 @@ class ComprasController extends Controller
             ->orderBy('nombre')
             ->get();
 
-        return Inertia::render('Compras/Index', [
+        $stats = [
+            'total' => DB::table('compras')->count(),
+            'mes_actual' => DB::table('compras')->whereMonth('fecha', now()->month)->count(),
+            'total_monto' => DB::table('compras')->whereMonth('fecha', now()->month)->sum('total') ?? 0,
+            'pendientes' => DB::table('compras')->where('estado', 'pendiente')->count(),
+        ];
+
+        return view('compras.index', [
             'compras' => $compras,
-            'proveedores' => $proveedores
+            'proveedores' => $proveedores,
+            'stats' => $stats
         ]);
     }
 }

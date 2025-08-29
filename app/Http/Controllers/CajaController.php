@@ -15,9 +15,25 @@ class CajaController extends Controller
             ->orderBy('id', 'desc')
             ->first();
 
-        return Inertia::render('Caja/Index', [
+        $movimientos = DB::table('movimientos_caja')
+            ->where('fecha', '>=', now()->startOfDay())
+            ->orderBy('created_at', 'desc')
+            ->limit(50)
+            ->get();
+
+        $stats = [
+            'saldo_inicial' => $caja->saldo_inicial ?? 0,
+            'ingresos' => DB::table('movimientos_caja')->where('tipo', 'ingreso')->where('fecha', '>=', now()->startOfDay())->sum('monto') ?? 0,
+            'egresos' => DB::table('movimientos_caja')->where('tipo', 'egreso')->where('fecha', '>=', now()->startOfDay())->sum('monto') ?? 0,
+            'ventas_dia' => DB::table('ventas')->where('fecha', '>=', now()->startOfDay())->sum('total') ?? 0,
+        ];
+        
+        $stats['saldo_actual'] = $stats['saldo_inicial'] + $stats['ingresos'] - $stats['egresos'];
+
+        return view('caja.index', [
             'caja' => $caja,
-            'movimientos' => []
+            'movimientos' => $movimientos,
+            'stats' => $stats
         ]);
     }
 }

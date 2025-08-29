@@ -40,9 +40,28 @@ class BarraController extends Controller
             ->orderBy('productos.nombre')
             ->get();
 
-        return Inertia::render('Barra/Index', [
+        $stats = [
+            'pendientes' => $pedidosPendientes->count(),
+            'en_preparacion' => DB::table('ventas_detalle')
+                ->join('productos', 'ventas_detalle.producto_id', '=', 'productos.id')
+                ->join('categorias', 'productos.categoria_id', '=', 'categorias.id')
+                ->where('ventas_detalle.estado_cocina', 'preparando')
+                ->where('categorias.area', 'barra')
+                ->count(),
+            'completados_hoy' => DB::table('ventas_detalle')
+                ->join('ventas', 'ventas_detalle.venta_id', '=', 'ventas.id')
+                ->join('productos', 'ventas_detalle.producto_id', '=', 'productos.id')
+                ->join('categorias', 'productos.categoria_id', '=', 'categorias.id')
+                ->where('ventas_detalle.estado_cocina', 'listo')
+                ->where('categorias.area', 'barra')
+                ->whereDate('ventas.created_at', now()->toDateString())
+                ->count(),
+        ];
+
+        return view('barra.index', [
             'pedidosPendientes' => $pedidosPendientes,
-            'bebidas' => $bebidas
+            'bebidas' => $bebidas,
+            'stats' => $stats
         ]);
     }
 }

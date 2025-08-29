@@ -13,9 +13,18 @@ class MesaController extends Controller
         $mesas = DB::table('mesas')
             ->orderBy('numero')
             ->get();
+            
+        $stats = [
+            'total' => $mesas->count(),
+            'disponibles' => $mesas->where('estado', 'disponible')->count(),
+            'ocupadas' => $mesas->where('estado', 'ocupada')->count(),
+            'reservadas' => $mesas->where('estado', 'reservada')->count(),
+        ];
 
-        return Inertia::render('Mesas/Index', [
-            'mesas' => $mesas
+        // Usar vista Blade en lugar de Inertia
+        return view('mesas.index', [
+            'mesas' => $mesas,
+            'stats' => $stats
         ]);
     }
 
