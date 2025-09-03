@@ -33,20 +33,226 @@
             box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
         }
         
+        .sidebar-item {
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            margin: 2px 0;
+            position: relative;
+        }
+        
         .sidebar-item:hover {
-            background: #f8f9fa;
-            border-radius: 8px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(59, 130, 246, 0.12) 100%);
+            color: #1E40AF;
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+            border-radius: 10px;
         }
         
         .sidebar-item.active {
-            background: #e3f2fd;
-            border-radius: 8px;
-            color: #1976d2;
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            color: white;
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+            border-radius: 10px;
+        }
+        
+        .sidebar-item.active::before {
+            content: '';
+            position: absolute;
+            left: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 28px;
+            background: #1D4ED8;
+            border-radius: 2px;
         }
         
         .tag-orange {
             background: #f59e0b;
             color: white;
+        }
+        
+        /* Mejoras adicionales para los contadores */
+        .notification-badge {
+            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+            animation: pulse-subtle 2s infinite;
+        }
+        
+        @keyframes pulse-subtle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        /* Efectos hover mejorados para los íconos */
+        .sidebar-item i {
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-item:hover i {
+            transform: scale(1.1);
+        }
+        
+        .sidebar-item.active i {
+            filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.3));
+        }
+        
+        /* Estilos optimizados para imágenes de productos */
+        .product-image-container {
+            position: relative;
+            overflow: hidden;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: all 0.3s ease;
+        }
+        
+        .product-image:hover {
+            transform: scale(1.05);
+        }
+        
+        .product-image-fallback {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+            padding: 8px;
+        }
+        
+        /* Contenedores específicos por contexto */
+        .dashboard-product-image {
+            width: 100%;
+            height: 96px; /* h-24 = 96px */
+            border-radius: 8px;
+            background: #f1f5f9;
+        }
+        
+        .cart-item-image {
+            width: 48px; /* w-12 = 48px */
+            height: 48px; /* h-12 = 48px */
+            border-radius: 8px;
+        }
+        
+        .product-card-image {
+            width: 100%;
+            height: 120px;
+            border-radius: 12px;
+        }
+        
+        /* Placeholder para imágenes sin cargar */
+        .image-placeholder {
+            background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 100%);
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        /* Alertas de stock */
+        .stock-warning {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            animation: pulse-warning 2s infinite;
+            z-index: 10;
+        }
+        
+        .stock-critical {
+            background: #dc2626 !important;
+            box-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
+        }
+        
+        .stock-low-text {
+            color: #f59e0b !important;
+            font-weight: 600;
+        }
+        
+        .stock-critical-text {
+            color: #ef4444 !important;
+            font-weight: 700;
+        }
+        
+        @keyframes pulse-warning {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+        
+        /* Estilos para búsqueda inteligente */
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 50;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .suggestion-item {
+            padding: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #f3f4f6;
+            transition: background-color 0.2s;
+        }
+        
+        .suggestion-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* Modal de promociones */
+        .promo-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        
+        .promo-content {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            max-width: 400px;
+            margin: 20px;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .tag-green {
@@ -191,19 +397,26 @@
                         <a href="/inventario" class="sidebar-item flex items-center gap-3 px-3 py-2.5 text-sm">
                             <i class="fas fa-boxes w-5"></i>
                             <span>Inventario</span>
-                            <span class="ml-auto text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-medium">2</span>
+                            <span class="ml-auto text-xs notification-badge text-white px-2 py-0.5 rounded-full font-semibold">2</span>
                         </a>
                     </li>
                     <li>
                         <a href="/productos" class="sidebar-item flex items-center gap-3 px-3 py-2.5 text-sm">
-                            <i class="fas fa-tag w-5"></i>
-                            <span>Descuentos</span>
-                            <span class="ml-auto text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full font-medium">5</span>
+                            <i class="fas fa-utensils w-5"></i>
+                            <span>Productos</span>
+                            <span class="ml-auto text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-semibold shadow-sm">{{ $stats['productos'] ?? 10 }}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/categorias" class="sidebar-item flex items-center gap-3 px-3 py-2.5 text-sm">
+                            <i class="fas fa-tags w-5"></i>
+                            <span>Categorías</span>
+                            <span class="ml-auto text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full font-semibold shadow-sm">{{ $stats['categorias'] ?? 5 }}</span>
                         </a>
                     </li>
                     <li>
                         <a href="/mesas" class="sidebar-item flex items-center gap-3 px-3 py-2.5 text-sm">
-                            <i class="fas fa-utensils w-5"></i>
+                            <i class="fas fa-chair w-5"></i>
                             <span>Mesas</span>
                         </a>
                     </li>
@@ -250,8 +463,8 @@
             <div class="p-4 border-t border-gray-200">
                 <div class="text-xs text-gray-500 mb-3">Cambiar cuenta</div>
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center">
-                        <span class="text-sm font-semibold">AD</span>
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center shadow-md">
+                        <span class="text-sm font-semibold text-white">AD</span>
                     </div>
                     <div class="flex-1">
                         <div class="text-sm font-medium text-gray-900">Administrador</div>
@@ -345,10 +558,10 @@
                         <div class="bg-white rounded-xl p-4 shadow-sm">
                             <div class="flex items-center justify-between mb-2">
                                 <span class="text-gray-500 text-sm">Clientes Hoy</span>
-                                <i class="fas fa-users text-purple-500"></i>
+                                <i class="fas fa-users text-blue-500"></i>
                             </div>
                             <p class="text-2xl font-bold text-gray-900">{{ $stats['clientes_hoy'] }}</p>
-                            <p class="text-xs {{ $stats['porcentaje_clientes'] >= 0 ? 'text-purple-600' : 'text-red-600' }} mt-2">
+                            <p class="text-xs {{ $stats['porcentaje_clientes'] >= 0 ? 'text-blue-600' : 'text-red-600' }} mt-2">
                                 <i class="fas fa-arrow-{{ $stats['porcentaje_clientes'] >= 0 ? 'up' : 'down' }}"></i> {{ abs($stats['porcentaje_clientes']) }}% {{ $stats['porcentaje_clientes'] >= 0 ? 'más' : 'menos' }} que ayer
                             </p>
                         </div>
@@ -484,7 +697,7 @@
                         <div class="bg-white rounded-xl p-4 shadow-sm">
                             <div class="flex items-center justify-between mb-3">
                                 <span class="text-sm font-medium text-gray-700">Actividad Reciente</span>
-                                <i class="fas fa-clock text-purple-500"></i>
+                                <i class="fas fa-clock text-gray-500"></i>
                             </div>
                             <div class="space-y-2">
                                 <div class="flex justify-between">
@@ -505,39 +718,137 @@
                     
                     <!-- Panel de Productos Disponibles -->
                     <div class="bg-white rounded-xl p-6 shadow-sm">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Productos Disponibles</h3>
-                        <div class="grid grid-cols-4 gap-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-900">Productos Disponibles</h3>
+                            <span class="text-sm text-gray-500">({{ $productos->count() }} productos)</span>
+                        </div>
+                        
+                        <!-- Búsqueda inteligente -->
+                        <div class="relative mb-4">
+                            <input type="text" 
+                                   id="productSearch" 
+                                   placeholder="🔍 Buscar productos..." 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                   autocomplete="off"
+                                   oninput="buscarProductosInteligente(this.value)"
+                                   onfocus="mostrarSugerencias(true)"
+                                   onblur="setTimeout(() => mostrarSugerencias(false), 200)">
+                            
+                            <!-- Sugerencias -->
+                            <div id="searchSuggestions" class="search-suggestions hidden"></div>
+                        </div>
+                        
+                        <!-- Filtros por categoría -->
+                        <div class="flex gap-2 mb-4 overflow-x-auto">
+                            <button onclick="filtrarPorCategoria('')" 
+                                    class="category-filter active px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded-full whitespace-nowrap">
+                                Todos
+                            </button>
+                            @php
+                                $categorias = $productos->groupBy('categoria_nombre');
+                            @endphp
+                            @foreach($categorias as $categoria => $productos_cat)
+                                <button onclick="filtrarPorCategoria('{{ $categoria }}')" 
+                                        class="category-filter px-3 py-1 text-xs bg-gray-100 text-gray-600 rounded-full whitespace-nowrap hover:bg-gray-200">
+                                    {{ $categoria }} ({{ $productos_cat->count() }})
+                                </button>
+                            @endforeach
+                        </div>
+                        @if($productos->isEmpty())
+                            <div class="text-center py-8">
+                                <i class="fas fa-box-open text-4xl text-gray-300 mb-3"></i>
+                                <p class="text-gray-500">No hay productos disponibles</p>
+                                <a href="/productos" class="text-blue-500 hover:text-blue-700 text-sm mt-2 inline-block">
+                                    Ir a gestión de productos →
+                                </a>
+                            </div>
+                        @else
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                             @foreach($productos->take(8) as $producto)
-                            <div class="bg-white border rounded-lg p-3 hover:shadow-lg transition-shadow cursor-pointer product-card"
-                                 onclick="agregarProducto({
+                            <div class="bg-white border rounded-lg p-3 hover:shadow-lg transition-shadow cursor-pointer product-card relative"
+                                 onclick="agregarProductoConPromo({
                                     id: {{ $producto->id }},
                                     nombre: '{{ $producto->nombre }}',
                                     precio_venta: {{ $producto->precio_venta }},
                                     categoria: '{{ $producto->categoria_nombre }}',
-                                    imagen: '{{ $producto->imagen }}'
+                                    imagen: '{{ $producto->imagen }}',
+                                    stock: {{ $producto->stock ?? 0 }}
                                  })">
-                                <div class="w-full h-24 bg-gray-100 rounded-lg mb-2 overflow-hidden">
-                                    @if($producto->imagen_url)
-                                        <img src="{{ $producto->imagen_url }}" 
+                                
+                                @php
+                                    $stock = $producto->stock ?? 0;
+                                    $stockMinimo = $producto->stock_minimo ?? 10;
+                                @endphp
+                                
+                                <!-- Alerta de stock bajo -->
+                                @if($stock <= 5)
+                                    <div class="stock-warning {{ $stock == 0 ? 'stock-critical' : '' }}" title="{{ $stock == 0 ? 'Sin stock' : 'Stock crítico: ' . $stock }}">
+                                        @if($stock == 0)
+                                            !
+                                        @else
+                                            {{ $stock }}
+                                        @endif
+                                    </div>
+                                @elseif($stock <= $stockMinimo)
+                                    <div class="stock-warning" style="background: #f59e0b;" title="Stock bajo: {{ $stock }}">
+                                        {{ $stock }}
+                                    </div>
+                                @endif
+                                
+                                <div class="dashboard-product-image product-image-container">
+                                    @php
+                                        $imagenUrl = null;
+                                        if ($producto->imagen_url) {
+                                            $imagenUrl = $producto->imagen_url;
+                                        } elseif ($producto->imagen && file_exists(public_path($producto->imagen))) {
+                                            $imagenUrl = '/' . $producto->imagen;
+                                        } elseif ($producto->imagen && file_exists(public_path('uploads/productos/' . basename($producto->imagen)))) {
+                                            $imagenUrl = '/uploads/productos/' . basename($producto->imagen);
+                                        }
+                                    @endphp
+                                    
+                                    @if($imagenUrl)
+                                        <img src="{{ $imagenUrl }}" 
                                              alt="{{ $producto->nombre }}" 
-                                             class="w-full h-full object-cover"
-                                             onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&h=100&fit=crop'">
+                                             class="product-image {{ $stock == 0 ? 'opacity-50' : '' }}"
+                                             onerror="this.outerHTML='<div class=&quot;image-placeholder dashboard-product-image&quot;><i class=&quot;fas fa-utensils&quot;></i></div>'">
                                     @else
-                                        <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&h=100&fit=crop" 
-                                             alt="{{ $producto->nombre }}" class="w-full h-full object-cover">
+                                        <div class="image-placeholder dashboard-product-image {{ $stock == 0 ? 'opacity-50' : '' }}">
+                                            <i class="fas fa-utensils"></i>
+                                        </div>
                                     @endif
                                 </div>
-                                <h4 class="text-sm font-medium text-gray-900 mb-1 truncate">{{ $producto->nombre }}</h4>
+                                
+                                <h4 class="text-sm font-medium text-gray-900 mb-1 truncate {{ $stock == 0 ? 'opacity-50' : '' }}">{{ $producto->nombre }}</h4>
                                 <p class="text-xs text-gray-500 mb-1">{{ $producto->categoria_nombre }}</p>
-                                <div class="flex items-center justify-between">
+                                
+                                <!-- Stock visual -->
+                                <div class="flex items-center justify-between mb-1">
                                     <p class="text-sm font-bold text-blue-600">S/ {{ number_format($producto->precio_venta, 2) }}</p>
-                                    <button class="w-8 h-8 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center hover:bg-blue-100 transition">
+                                    <p class="text-xs 
+                                        @if($stock == 0) stock-critical-text 
+                                        @elseif($stock <= 5) stock-critical-text 
+                                        @elseif($stock <= $stockMinimo) stock-low-text 
+                                        @else text-green-600 
+                                        @endif">
+                                        @if($stock == 0)
+                                            Sin stock
+                                        @else
+                                            Stock: {{ $stock }}
+                                        @endif
+                                    </p>
+                                </div>
+                                
+                                <div class="flex items-center justify-center">
+                                    <button class="w-8 h-8 {{ $stock == 0 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-blue-50 text-blue-600 hover:bg-blue-100' }} rounded-full flex items-center justify-center transition"
+                                            {{ $stock == 0 ? 'disabled' : '' }}>
                                         <i class="fas fa-plus text-xs"></i>
                                     </button>
                                 </div>
                             </div>
                             @endforeach
                         </div>
+                        @endif
                     </div>
                 </div>
                 
@@ -792,6 +1103,24 @@
         // Funciones del Dashboard
         let tipoOrden = 'llevar';
         let carrito = [];
+        let todosLosProductos = @json($productos ?? []); // Para búsqueda inteligente
+        let promociones = {
+            'Hamburguesa Clásica': {
+                combo: 'Coca Cola',
+                descuento: 0.10,
+                mensaje: '¿Agregar una Coca Cola con 10% de descuento?'
+            },
+            'Alitas BBQ': {
+                combo: 'Cerveza Corona',
+                descuento: 0.15,
+                mensaje: '¿Agregar cerveza Corona con 15% de descuento?'
+            },
+            'Nachos con Queso': {
+                combo: 'Coca Cola',
+                descuento: 0.12,
+                mensaje: '¿Agregar Coca Cola con 12% de descuento?'
+            }
+        };
         
         function cambiarPeriodo(periodo) {
             console.log('Cambiando periodo a:', periodo);
@@ -851,9 +1180,6 @@
                     carrito = JSON.parse(carritoGuardado);
                     actualizarCarritoUI();
                     actualizarTotales();
-                    if (carrito.length > 0) {
-                        mostrarNotificacion(`${carrito.length} items recuperados del carrito`, 'info');
-                    }
                 } catch (e) {
                     console.error('Error cargando carrito:', e);
                 }
@@ -1162,9 +1488,11 @@
                                     ${item.imagen ? `
                                         <img src="/storage/${item.imagen}" 
                                              class="w-6 h-6 rounded object-cover" 
-                                             onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=24&h=24&fit=crop'">
+                                             onerror="this.src='${getImageByCategory(item.categoria)}'">
                                     ` : `
-                                        <div class="w-6 h-6 bg-gray-200 rounded"></div>
+                                        <img src="${getImageByCategory(item.categoria)}" 
+                                             class="w-6 h-6 rounded object-cover" 
+                                             alt="${item.nombre}">
                                     `}
                                     <span class="text-gray-700">${item.cantidad}x ${item.nombre}</span>
                                     <span class="ml-auto text-gray-900 font-medium">S/ ${(item.subtotal || (item.cantidad * item.precio_unitario)).toFixed(2)}</span>
@@ -1292,27 +1620,38 @@
             const cantidad = producto.quantity || producto.cantidad || 1;
             const total = precio * cantidad;
             
-            // Determinar la URL de la imagen
-            let imagenUrl = 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=48&h=48&fit=crop';
-            if (producto.imagen && producto.imagen !== 'null' && producto.imagen !== null) {
-                // Si la imagen ya viene con /storage/ usarla directamente
-                if (producto.imagen.startsWith('/storage/')) {
+            // Determinar la URL de la imagen con prioridad al API
+            let imagenUrl;
+            if (producto.imagen_url && producto.imagen_url !== 'null' && producto.imagen_url !== null) {
+                // Usar la URL procesada por el API del backend
+                imagenUrl = producto.imagen_url;
+            } else if (producto.imagen && producto.imagen !== 'null' && producto.imagen !== null) {
+                // Fallback para compatibilidad con datos locales
+                if (producto.imagen.startsWith('/storage/') || producto.imagen.startsWith('/uploads/')) {
                     imagenUrl = producto.imagen;
                 } else if (producto.imagen.startsWith('http')) {
                     imagenUrl = producto.imagen;
                 } else {
-                    // Si es solo el nombre del archivo, agregarle /storage/
-                    imagenUrl = '/storage/' + producto.imagen;
+                    imagenUrl = '/uploads/productos/' + producto.imagen;
                 }
+            } else {
+                // Usar imagen por categoría como fallback
+                imagenUrl = getImageByCategory(producto.categoria || producto.categoria_nombre);
             }
             
             return `
                 <div class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg bg-white" data-item-id="${producto.id}">
-                    <!-- Imagen del producto -->
-                    <div class="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
-                        <img src="${imagenUrl}" 
-                             alt="${producto.nombre}" class="w-full h-full object-cover"
-                             onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=48&h=48&fit=crop'">
+                    <!-- Imagen del producto optimizada -->
+                    <div class="cart-item-image product-image-container flex-shrink-0">
+                        ${imagenUrl ? 
+                            `<img src="${imagenUrl}" 
+                                  alt="${producto.nombre}" 
+                                  class="product-image"
+                                  onerror="this.outerHTML='<div class=\\"image-placeholder cart-item-image\\"><i class=\\"fas fa-utensils\\"></i></div>'">` :
+                            `<div class="image-placeholder cart-item-image">
+                                <i class="fas fa-utensils"></i>
+                             </div>`
+                        }
                     </div>
                     
                     <!-- Información del producto -->
@@ -1396,26 +1735,60 @@
             }
         }
         
-        function agregarProducto(producto) {
-            const existingItem = carrito.find(item => item.id === producto.id);
-            
-            if (existingItem) {
-                existingItem.quantity = (existingItem.quantity || 1) + 1;
-                mostrarNotificacion(`+1 ${producto.nombre}`, 'info');
-            } else {
-                // Crear nuevo item con cantidad inicial e imagen
-                const nuevoItem = {
-                    ...producto,
-                    quantity: 1,
-                    adiccion: 'Ninguna', // Valor por defecto
-                    imagen: producto.imagen || null // Guardar la imagen
-                };
-                carrito.push(nuevoItem);
-                mostrarNotificacion(`${producto.nombre} agregado al carrito`, 'success');
+        async function agregarProducto(producto) {
+            try {
+                // Usar API del backend para agregar producto con detalles completos
+                const response = await fetch('/api/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        product_id: producto.id,
+                        cantidad: 1
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Actualizar carrito con datos completos del servidor (incluyendo imágenes)
+                    carrito = data.carrito;
+                    
+                    // Actualizar interfaz con nuevos datos
+                    actualizarCarritoUI();
+                    
+                    // Mostrar notificación
+                    mostrarNotificacion(`${data.producto.nombre} agregado al carrito`, 'success');
+                    
+                    // Sincronizar con localStorage
+                    localStorage.setItem('carrito', JSON.stringify(carrito));
+                } else {
+                    mostrarNotificacion(data.message || 'Error al agregar producto', 'error');
+                }
+            } catch (error) {
+                console.error('Error API:', error);
+                // Fallback al método original si falla la API
+                const existingItem = carrito.find(item => item.id === producto.id);
+                
+                if (existingItem) {
+                    existingItem.quantity = (existingItem.quantity || 1) + 1;
+                    mostrarNotificacion(`+1 ${producto.nombre}`, 'info');
+                } else {
+                    const nuevoItem = {
+                        ...producto,
+                        quantity: 1,
+                        adiccion: 'Ninguna',
+                        imagen_url: producto.imagen || null
+                    };
+                    carrito.push(nuevoItem);
+                    mostrarNotificacion(`${producto.nombre} agregado al carrito`, 'success');
+                }
+                
+                guardarCarritoLocal();
+                actualizarCarritoUI();
             }
-            
-            guardarCarritoLocal();
-            actualizarCarritoUI();
         }
         
         function cargarProductosPrueba() {
@@ -1489,7 +1862,6 @@
             .then(data => {
                 console.log('Historial cargado desde BD:', data);
                 if (data.success) {
-                    mostrarNotificacion('✅ Base de datos conectada correctamente', 'success');
                     console.log(`Total de ventas en historial: ${data.ventas ? data.ventas.length : 0}`);
                 }
             })
@@ -1534,13 +1906,10 @@
                 document.body.appendChild(nuevoIndicador);
             }
             
+            // Ocultar indicador de BD
             const elemento = document.getElementById('db-status');
-            if (conectado) {
-                elemento.className = 'fixed bottom-4 left-4 px-3 py-2 rounded-full text-xs font-medium flex items-center gap-2 z-50 bg-green-100 text-green-800';
-                elemento.innerHTML = '<span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> BD Conectada';
-            } else {
-                elemento.className = 'fixed bottom-4 left-4 px-3 py-2 rounded-full text-xs font-medium flex items-center gap-2 z-50 bg-yellow-100 text-yellow-800';
-                elemento.innerHTML = '<span class="w-2 h-2 bg-yellow-500 rounded-full"></span> Modo Local';
+            if (elemento) {
+                elemento.style.display = 'none';
             }
         }
         
@@ -1565,6 +1934,22 @@
         
         // Verificar conexión cada 30 segundos
         setInterval(verificarConexionBD, 30000);
+        
+        // Función para obtener imagen por categoría
+        function getImageByCategory(categoria) {
+            const categoryImages = {
+                'Bebidas': 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=24&h=24&fit=crop', // agua
+                'Bebidas Frías': 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=24&h=24&fit=crop', // agua
+                'Bebidas Calientes': 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=24&h=24&fit=crop', // café
+                'Entradas': 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=24&h=24&fit=crop', // ensalada
+                'Platos Principales': 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=24&h=24&fit=crop', // plato
+                'Postres': 'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=24&h=24&fit=crop', // postre
+                'Vinos': 'https://images.unsplash.com/photo-1474722883778-792e7990302f?w=24&h=24&fit=crop', // vino
+                'Cervezas': 'https://images.unsplash.com/photo-1523362628745-0c100150b504?w=24&h=24&fit=crop', // cerveza
+                'Cocteles': 'https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=24&h=24&fit=crop' // coctel
+            };
+            return categoryImages[categoria] || 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=24&h=24&fit=crop'; // default
+        }
     </script>
     <!-- Botón Flotante para Punto de Venta -->
     <a href="/ventas" class="fixed bottom-8 right-8 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg z-40 flex items-center justify-center transition-all hover:scale-110 group">

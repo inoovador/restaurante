@@ -262,13 +262,13 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                            {{ $movimiento->tipo === 'entrada' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                            {{ ucfirst($movimiento->tipo ?? 'entrada') }}
+                                            {{ $movimiento->tipo_movimiento === 'entrada' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                            {{ ucfirst($movimiento->tipo_movimiento ?? 'entrada') }}
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium
-                                        {{ $movimiento->tipo === 'entrada' ? 'text-green-600' : 'text-red-600' }}">
-                                        {{ $movimiento->tipo === 'entrada' ? '+' : '-' }} {{ $movimiento->cantidad ?? 0 }}
+                                        {{ $movimiento->tipo_movimiento === 'entrada' ? 'text-green-600' : 'text-red-600' }}">
+                                        {{ $movimiento->tipo_movimiento === 'entrada' ? '+' : '-' }} {{ $movimiento->cantidad ?? 0 }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {{ $movimiento->motivo ?? 'Sin especificar' }}

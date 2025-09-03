@@ -1,0 +1,272 @@
+/* Optimizaciones de Performance CSS */
+
+/* Aceleración por hardware para animaciones */
+.product-card,
+.sidebar-item,
+.btn-hover {
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+/* Transiciones suaves optimizadas */
+.transition-smooth {
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Contenedor de productos optimizado */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    contain: layout style paint;
+}
+
+/* Skeleton loader para productos */
+.product-skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 8px;
+}
+
+@keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Lazy loading states */
+.lazy {
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.lazy.loaded {
+    opacity: 1;
+}
+
+/* Optimize images */
+.product-image {
+    object-fit: cover;
+    object-position: center;
+    background-color: #f3f4f6;
+}
+
+/* Contenedor de loading state */
+.loading-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: loading-shimmer 1.5s infinite;
+}
+
+@keyframes loading-shimmer {
+    100% { left: 100%; }
+}
+
+/* Optimizaciones para scroll suave */
+.smooth-scroll {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Contención para mejorar performance */
+.contained {
+    contain: layout style paint;
+}
+
+/* Optimizaciones de hover */
+.hover-lift {
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+
+.hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Estados de carga para diferentes componentes */
+.search-loading {
+    position: relative;
+}
+
+.search-loading::after {
+    content: '';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid #e5e7eb;
+    border-top: 2px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: translateY(-50%) rotate(0deg); }
+    100% { transform: translateY(-50%) rotate(360deg); }
+}
+
+/* Optimización para listas virtualizadas */
+.virtual-list {
+    overflow-y: auto;
+    height: 100%;
+    position: relative;
+}
+
+.virtual-item {
+    position: absolute;
+    left: 0;
+    right: 0;
+    contain: strict;
+}
+
+/* Mejoras de accesibilidad y performance */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Optimización para reducir reflows */
+.layout-stable {
+    contain: layout;
+}
+
+/* Prefetch y preload helpers */
+.prefetch-image {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+/* Animaciones optimizadas para mobile */
+@media (max-width: 768px) {
+    .product-card {
+        will-change: auto;
+    }
+    
+    .hover-lift:hover {
+        transform: none;
+    }
+    
+    /* Reducir animaciones en móvil para mejor performance */
+    .transition-smooth {
+        transition-duration: 0.1s;
+    }
+}
+
+/* Optimización para pantallas de alta densidad */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .product-image {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* Estados de carga específicos */
+.btn-loading {
+    position: relative;
+    color: transparent !important;
+    pointer-events: none;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid #ffffff;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Optimizaciones para el carrito */
+.cart-item {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.cart-slide-in {
+    animation: slideInRight 0.3s ease-out;
+}
+
+.cart-slide-out {
+    animation: slideOutRight 0.3s ease-in;
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+@keyframes slideOutRight {
+    from { transform: translateX(0); }
+    to { transform: translateX(100%); }
+}
+
+/* Mejoras de performance para inputs */
+.input-optimized {
+    will-change: box-shadow, border-color;
+}
+
+/* Contenedor principal optimizado */
+.dashboard-container {
+    contain: layout style;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 250px 1fr;
+}
+
+/* Optimización para sidebar */
+.sidebar {
+    contain: layout style paint;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+/* Responsive optimizations */
+@media (max-width: 1024px) {
+    .dashboard-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .sidebar {
+        position: fixed;
+        z-index: 50;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+    }
+    
+    .sidebar.open {
+        transform: translateX(0);
+    }
+}

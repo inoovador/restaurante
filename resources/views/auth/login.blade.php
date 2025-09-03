@@ -17,20 +17,40 @@
         }
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+        .bg-restaurant {
+            background-image: url('/images/restaurant-interior.jpg');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #1a1a1a;
+        }
+        @media (min-width: 1024px) {
+            .bg-restaurant {
+                background-size: cover;
+            }
+        }
+    </style>
 </head>
-<body class="min-h-screen flex">
+<body class="h-screen overflow-hidden flex">
     <!-- Panel Izquierdo - Imagen del Restaurante -->
-    <div class="hidden lg:flex lg:w-1/2 relative">
-        <div class="absolute inset-0 bg-black bg-opacity-40 z-10"></div>
-        <img src="/images/restaurant-interior.jpg" 
-             alt="Interior del restaurante" 
-             class="w-full h-full object-cover">
-        <div class="absolute inset-0 z-20 flex flex-col justify-center items-center text-white p-12">
-            <div class="text-center">
-                <h1 class="text-4xl font-bold mb-4">FoodPoint</h1>
-                <p class="text-xl mb-6">Sistema de Gestión de Restaurante</p>
-                <div class="max-w-md">
-                    <p class="text-lg opacity-90 leading-relaxed">
+    <div class="hidden lg:flex lg:w-1/2 relative bg-restaurant h-full">
+        <div class="absolute inset-0 bg-gradient-to-br from-black/70 to-black/50 z-10"></div>
+        <div class="relative z-20 flex flex-col justify-center items-center text-white p-6 w-full h-full">
+            <div class="text-center max-w-md">
+                <div class="mb-4">
+                    <div class="mx-auto h-16 w-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/40">
+                        <i class="fas fa-utensils text-white text-2xl"></i>
+                    </div>
+                </div>
+                <h1 class="text-4xl font-bold mb-3">FoodPoint</h1>
+                <p class="text-xl mb-4 font-light">Sistema de Gestión de Restaurante</p>
+                <div class="border-t border-white/30 pt-4 mt-4">
+                    <p class="text-base opacity-90 leading-relaxed">
                         Gestiona tu restaurante con elegancia y eficiencia. 
                         Control total de pedidos, inventario, mesas y ventas.
                     </p>
@@ -40,8 +60,8 @@
     </div>
 
     <!-- Panel Derecho - Formulario de Login -->
-    <div class="w-full lg:w-1/2 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-8">
-        <div class="max-w-md w-full space-y-8">
+    <div class="w-full lg:w-1/2 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-6 h-full overflow-y-auto">
+        <div class="max-w-md w-full">
             <!-- Logo para móviles -->
             <div class="lg:hidden text-center mb-8">
                 <div class="mx-auto h-16 w-16 bg-primary rounded-full flex items-center justify-center mb-4">

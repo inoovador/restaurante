@@ -101,27 +101,41 @@ class DashboardController extends Controller
             'usuarios_online' => rand(3, 8)
         ];
 
-        // Categorías activas
-        $categorias = Categoria::where('activo', true)
+        // Categorías activas - solo campos necesarios
+        $categorias = Categoria::select(['id', 'nombre', 'tipo', 'area', 'color'])
+            ->where('activo', true)
             ->orderBy('nombre')
             ->get();
 
-        // Obtener datos adicionales para el dashboard React
-        $productos_recientes = Producto::with('categoria')
-            ->latest()
-            ->limit(20)
-            ->get()
-            ->map(function ($producto) {
-                return [
-                    'id' => $producto->id,
-                    'codigo' => $producto->codigo ?? 'PRD-' . $producto->id,
-                    'nombre' => $producto->nombre,
-                    'precio_venta' => $producto->precio_venta,
-                    'stock' => $producto->stock ?? rand(5, 50),
-                    'categoria_id' => $producto->categoria_id,
-                    'categoria_nombre' => $producto->categoria->nombre ?? 'General',
-                ];
-            });
+        // Obtener datos adicionales para el dashboard con paginación y eager loading optimizado
+        $perPage = request('per_page', 12);
+        $productos_query = Producto::select(['id', 'codigo', 'nombre', 'precio_venta', 'stock', 'categoria_id', 'imagen', 'created_at'])
+            ->with(['categoria:id,nombre']) // Solo cargar los campos necesarios de la categoría
+            ->where('activo', true);
+            
+        // Aplicar filtros si existen
+        if (request('categoria_id')) {
+            $productos_query->where('categoria_id', request('categoria_id'));
+        }
+        
+        if (request('search')) {
+            $productos_query->where('nombre', 'like', '%' . request('search') . '%');
+        }
+        
+        $productos_paginados = $productos_query->latest()->paginate($perPage);
+        
+        $productos_recientes = $productos_paginados->getCollection()->map(function ($producto) {
+            return [
+                'id' => $producto->id,
+                'codigo' => $producto->codigo ?? 'PRD-' . $producto->id,
+                'nombre' => $producto->nombre,
+                'precio_venta' => (float) $producto->precio_venta,
+                'stock' => $producto->stock ?? rand(5, 50),
+                'categoria_id' => $producto->categoria_id,
+                'categoria_nombre' => $producto->categoria->nombre ?? 'General',
+                'imagen_url' => $producto->imagen ? '/uploads/productos/' . $producto->imagen : null,
+            ];
+        });
 
         // Si no hay productos, crear datos de ejemplo
         if ($productos_recientes->isEmpty()) {
@@ -135,14 +149,17 @@ class DashboardController extends Controller
             ]);
         }
 
-        $mesas = Mesa::all()->map(function ($mesa) {
-            return [
-                'numero' => $mesa->numero ?? 'Mesa ' . $mesa->id,
-                'capacidad' => $mesa->capacidad ?? 4,
-                'estado' => $mesa->estado ?? 'disponible',
-                'zona' => $mesa->zona ?? 'Principal',
-            ];
-        });
+        // Optimizar consulta de mesas
+        $mesas = Mesa::select(['id', 'numero', 'capacidad', 'estado', 'zona'])
+            ->get()
+            ->map(function ($mesa) {
+                return [
+                    'numero' => $mesa->numero ?? 'Mesa ' . $mesa->id,
+                    'capacidad' => $mesa->capacidad ?? 4,
+                    'estado' => $mesa->estado ?? 'disponible',
+                    'zona' => $mesa->zona ?? 'Principal',
+                ];
+            });
 
         // Si no hay mesas, crear datos de ejemplo
         if ($mesas->isEmpty()) {
@@ -179,33 +196,39 @@ class DashboardController extends Controller
             'productos_stock_bajo' => $productos_recientes->where('stock', '<', 10)->count(),
         ];
 
-        // Obtener productos para el panel de ventas con imágenes
-        $productos = DB::table('productos')
-            ->join('categorias', 'productos.categoria_id', '=', 'categorias.id')
-            ->where('productos.activo', true)
-            ->where('productos.stock', '>', 0)
-            ->select(
-                'productos.id',
-                'productos.nombre',
-                'productos.precio_venta',
-                'productos.stock',
-                'productos.imagen', // Campo imagen directo de la BD
-                'categorias.nombre as categoria_nombre', 
-                'categorias.tipo as categoria_tipo'
-            )
-            ->orderBy('categorias.nombre')
-            ->orderBy('productos.nombre')
-            ->get();
-            
-        // Procesar las URLs de imágenes
-        $productos = $productos->map(function($producto) {
-            if ($producto->imagen && file_exists(storage_path('app/public/' . $producto->imagen))) {
-                $producto->imagen_url = '/storage/' . $producto->imagen;
-            } else {
-                $producto->imagen_url = null;
-            }
-            return $producto;
-        });
+        // Obtener productos para el panel de ventas con imágenes - optimizado
+        try {
+            $productos = DB::table('productos')
+                ->leftJoin('categorias', 'productos.categoria_id', '=', 'categorias.id')
+                ->where('productos.activo', true)
+                ->select(
+                    'productos.id',
+                    'productos.nombre',
+                    'productos.precio_venta',
+                    'productos.stock',
+                    'productos.imagen',
+                    'categorias.nombre as categoria_nombre'
+                )
+                ->orderBy('productos.nombre')
+                ->limit(50) // Aumentar el límite para tener más productos disponibles
+                ->get();
+                
+            // Procesar las URLs de imágenes
+            $productos = $productos->map(function($producto) {
+                // Verificar si la imagen existe en public/uploads/productos/
+                if ($producto->imagen && file_exists(public_path($producto->imagen))) {
+                    $producto->imagen_url = '/' . $producto->imagen;
+                } elseif ($producto->imagen && file_exists(public_path('uploads/productos/' . $producto->imagen))) {
+                    $producto->imagen_url = '/uploads/productos/' . $producto->imagen;
+                } else {
+                    $producto->imagen_url = null;
+                }
+                return $producto;
+            });
+        } catch (\Exception $e) {
+            // Si hay error, usar collection vacía
+            $productos = collect();
+        }
             
         // Si no hay productos, usar los productos de ejemplo
         if ($productos->isEmpty()) {
@@ -234,9 +257,15 @@ class DashboardController extends Controller
             }),
             'productos' => $productos,
             'productos_recientes' => $productos_recientes,
+            'productos_paginados' => $productos_paginados ?? null,
             'mesas' => $mesas,
             'ventas_categoria' => $ventas_categoria,
             'productos_vendidos' => $productos_vendidos,
+            'filtros' => [
+                'categoria_id' => request('categoria_id'),
+                'search' => request('search'),
+                'per_page' => request('per_page', 12)
+            ]
         ]);
     }
     

@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
+import { LazyImage } from '@/components/ui/LazyImage';
 import { Head } from '@inertiajs/react';
 import { Link } from '@inertiajs/react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -43,7 +44,7 @@ import {
     UserCheck,
     Store
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useMemo, useCallback, memo } from 'react';
 
 interface DashboardProps {
     stats: {
@@ -115,27 +116,146 @@ const categoryIcons: { [key: string]: any } = {
     'default': ChefHat
 };
 
-// Generar productos de ejemplo con imágenes placeholder
+// Generar productos de ejemplo con imágenes según categoría
 const generateProducts = (categorias: any[], productos: any[]) => {
-    const productImages = [
-        'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop',
-        'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop',
-        'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&h=300&fit=crop',
-        'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&h=300&fit=crop',
-        'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=400&h=300&fit=crop',
-        'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=400&h=300&fit=crop',
-    ];
+    // Imágenes específicas por categoría
+    const categoryImages: { [key: string]: string[] } = {
+        'Bebidas': [
+            'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=300&fit=crop', // agua
+            'https://images.unsplash.com/photo-1523362628745-0c100150b504?w=400&h=300&fit=crop', // refrescos
+            'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400&h=300&fit=crop', // jugo
+            'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=300&fit=crop', // café
+        ],
+        'Pizzas': [
+            'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop',
+        ],
+        'Ensaladas': [
+            'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1550304943-4f24f54ddde9?w=400&h=300&fit=crop',
+        ],
+        'Sopas': [
+            'https://images.unsplash.com/photo-1547592180-85f173990554?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?w=400&h=300&fit=crop',
+        ],
+        'Postres': [
+            'https://images.unsplash.com/photo-1551024506-0bccd828d307?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=400&h=300&fit=crop',
+        ],
+        'Vinos': [
+            'https://images.unsplash.com/photo-1474722883778-792e7990302f?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400&h=300&fit=crop',
+        ],
+        'Platos Principales': [
+            'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=400&h=300&fit=crop',
+        ]
+    };
 
-    return productos.map((producto, index) => ({
-        ...producto,
-        image: productImages[index % productImages.length],
-        description: `Delicioso ${producto.nombre.toLowerCase()} preparado con ingredientes frescos`,
-        rating: (4 + Math.random()).toFixed(1),
-        tiempo: `${15 + Math.floor(Math.random() * 20)} min`,
-        calorias: `${200 + Math.floor(Math.random() * 300)} cal`
-    }));
+    // Imagen por defecto
+    const defaultImage = 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&h=300&fit=crop';
+
+    return productos.map((producto, index) => {
+        let image;
+        
+        // Usar imagen real de la base de datos si existe
+        if (producto.imagen_url) {
+            image = producto.imagen_url;
+        } else {
+            // Usar placeholder basado en categoría como fallback
+            const categoryName = producto.categoria_nombre;
+            const images = categoryImages[categoryName] || [defaultImage];
+            image = images[index % images.length];
+        }
+
+        return {
+            ...producto,
+            image: image,
+            description: `Delicioso ${producto.nombre.toLowerCase()} preparado con ingredientes frescos`,
+            rating: (4 + Math.random()).toFixed(1),
+            tiempo: `${15 + Math.floor(Math.random() * 20)} min`,
+            calorias: `${200 + Math.floor(Math.random() * 300)} cal`
+        };
+    });
 };
 
+// Componente memoizado para el producto individual
+const ProductCard = memo(({ product, onAddToCart }: { product: any; onAddToCart: (product: any) => void }) => {
+    const handleAddToCart = useCallback(() => onAddToCart(product), [product, onAddToCart]);
+    
+    return (
+        <motion.div
+            whileHover={{ y: -5, transition: { duration: 0.2 } }}
+            className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all cursor-pointer overflow-hidden group"
+        >
+            {/* Imagen del Producto */}
+            <div className="relative h-48 overflow-hidden bg-gray-100">
+                <LazyImage 
+                    src={product.image} 
+                    alt={product.nombre}
+                    className="w-full h-full group-hover:scale-110 transition-transform duration-300"
+                />
+                {product.stock < 10 && (
+                    <Badge className="absolute top-2 left-2 bg-red-500 text-white">
+                        ¡Últimas {product.stock}!
+                    </Badge>
+                )}
+                <div className="absolute top-2 right-2 flex items-center gap-1 bg-white/90 backdrop-blur px-2 py-1 rounded-full">
+                    <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                    <span className="text-xs font-medium">{product.rating}</span>
+                </div>
+            </div>
+
+            {/* Contenido */}
+            <div className="p-4">
+                <div className="mb-2">
+                    <Badge variant="outline" className="text-xs mb-1">
+                        {product.categoria_nombre}
+                    </Badge>
+                    <h3 className="font-semibold text-gray-900 line-clamp-1">
+                        {product.nombre}
+                    </h3>
+                    <p className="text-xs text-gray-500 line-clamp-2 mt-1">
+                        {product.description}
+                    </p>
+                </div>
+
+                {/* Info adicional */}
+                <div className="flex items-center gap-3 text-xs text-gray-500 mb-3">
+                    <span className="flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        {product.tiempo}
+                    </span>
+                    <span>•</span>
+                    <span>{product.calorias}</span>
+                </div>
+
+                {/* Precio y botón */}
+                <div className="flex items-center justify-between">
+                    <div>
+                        <span className="text-2xl font-bold" style={{ color: COLORS.primary }}>
+                            ${product.precio_venta}
+                        </span>
+                        <span className="text-xs text-gray-500 ml-1">/porción</span>
+                    </div>
+                    <motion.button
+                        whileTap={{ scale: 0.9 }}
+                        onClick={handleAddToCart}
+                        className="p-2 rounded-lg transition-colors hover:bg-red-50"
+                        style={{ backgroundColor: COLORS.primary + '15' }}
+                    >
+                        <Plus className="w-5 h-5" style={{ color: COLORS.primary }} />
+                    </motion.button>
+                </div>
+            </div>
+        </motion.div>
+    );
+});
+
+ProductCard.displayName = 'ProductCard';
+
+// Componente principal del Dashboard
 export default function Dashboard({ stats, categorias, productos_recientes, mesas, alertas = [], actividad_reciente = [] }: DashboardProps) {
     const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
@@ -143,53 +263,120 @@ export default function Dashboard({ stats, categorias, productos_recientes, mesa
     const [cart, setCart] = useState<any[]>([]);
     const [showCart, setShowCart] = useState(true);
     
-    const products = generateProducts(categorias, productos_recientes);
+    // Memoizar la generación de productos
+    const products = useMemo(() => generateProducts(categorias, productos_recientes), [categorias, productos_recientes]);
     
-    // Filtrar productos
-    const filteredProducts = products.filter(product => {
-        const matchesSearch = product.nombre.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesCategory = !selectedCategory || product.categoria_id === selectedCategory;
-        return matchesSearch && matchesCategory;
-    });
+    // Memoizar productos filtrados
+    const filteredProducts = useMemo(() => {
+        return products.filter(product => {
+            const matchesSearch = product.nombre.toLowerCase().includes(searchTerm.toLowerCase());
+            // Fix the category filtering by checking the actual product structure
+            const productCategoryId = product.categoria_id || product.id; // fallback in case categoria_id is missing
+            const matchesCategory = !selectedCategory || productCategoryId === selectedCategory;
+            return matchesSearch && matchesCategory;
+        });
+    }, [products, searchTerm, selectedCategory]);
 
-    // Funciones del carrito
-    const addToCart = (product: any) => {
-        const existingItem = cart.find(item => item.id === product.id);
-        if (existingItem) {
-            setCart(cart.map(item => 
-                item.id === product.id 
-                    ? { ...item, quantity: item.quantity + 1 }
-                    : item
-            ));
-        } else {
-            setCart([...cart, { ...product, quantity: 1 }]);
-        }
-    };
-
-    const updateQuantity = (productId: number, delta: number) => {
-        setCart(cart.map(item => {
-            if (item.id === productId) {
-                const newQuantity = item.quantity + delta;
-                return newQuantity > 0 ? { ...item, quantity: newQuantity } : null;
+    // Funciones del carrito optimizadas
+    const addToCart = useCallback((product: any) => {
+        setCart(currentCart => {
+            const existingItem = currentCart.find(item => item.id === product.id);
+            if (existingItem) {
+                return currentCart.map(item => 
+                    item.id === product.id 
+                        ? { ...item, quantity: item.quantity + 1 }
+                        : item
+                );
+            } else {
+                return [...currentCart, { ...product, quantity: 1 }];
             }
-            return item;
-        }).filter(Boolean) as any[]);
-    };
+        });
+    }, []);
 
-    const removeFromCart = (productId: number) => {
-        setCart(cart.filter(item => item.id !== productId));
-    };
+    const updateQuantity = useCallback((productId: number, delta: number) => {
+        setCart(currentCart => 
+            currentCart.map(item => {
+                if (item.id === productId) {
+                    const newQuantity = item.quantity + delta;
+                    return newQuantity > 0 ? { ...item, quantity: newQuantity } : null;
+                }
+                return item;
+            }).filter(Boolean) as any[]
+        );
+    }, []);
 
-    const getSubtotal = () => {
-        return cart.reduce((sum, item) => sum + (item.precio_venta * item.quantity), 0);
-    };
+    const removeFromCart = useCallback((productId: number) => {
+        setCart(currentCart => currentCart.filter(item => item.id !== productId));
+    }, []);
 
-    const getTax = () => {
-        return getSubtotal() * 0.16;
-    };
+    // Memoizar cálculos del carrito
+    const cartTotals = useMemo(() => {
+        const subtotal = cart.reduce((sum, item) => sum + (item.precio_venta * item.quantity), 0);
+        const tax = subtotal * 0.16;
+        const total = subtotal + tax;
+        const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-    const getTotal = () => {
-        return getSubtotal() + getTax();
+        return { subtotal, tax, total, itemCount };
+    }, [cart]);
+
+    const { subtotal: getSubtotal, tax: getTax, total: getTotal, itemCount } = cartTotals;
+
+    // Función para procesar el pago
+    const procesarPago = async () => {
+        if (cart.length === 0) {
+            alert('El carrito está vacío');
+            return;
+        }
+
+        const nombreCliente = 'Cliente General'; // Podrías agregar un input para esto
+        const mesa = '1'; // Podrías agregar un selector de mesa
+        
+        const ventaData = {
+            cliente: nombreCliente,
+            mesa_id: mesa,
+            tipo_orden: 'llevar', // Podrías hacer esto dinámico
+            items: cart.map(item => ({
+                id: item.id,
+                nombre: item.nombre,
+                cantidad: item.quantity,
+                precio_venta: item.precio_venta,
+                quantity: item.quantity
+            })),
+            subtotal: getSubtotal,
+            descuento: 0, // Podrías implementar descuentos
+            impuesto: getTax,
+            total: getTotal
+        };
+
+        if (confirm(`¿Procesar el pago de $${getTotal.toFixed(2)}?`)) {
+            try {
+                const response = await fetch('/api/ventas', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                    },
+                    body: JSON.stringify(ventaData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('✅ Venta registrada exitosamente - ' + data.numero_venta);
+                    
+                    // Limpiar carrito
+                    setCart([]);
+                    
+                    // Podrías agregar aquí lógica para imprimir boleta o mostrar resumen
+                    console.log('Venta procesada:', data);
+                } else {
+                    alert('❌ Error: ' + (data.message || 'Error al registrar la venta'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('⚠️ Error al procesar la venta');
+            }
+        }
     };
 
     return (
@@ -363,7 +550,7 @@ export default function Dashboard({ stats, categorias, productos_recientes, mesa
                                     <ShoppingCart className="w-4 h-4" />
                                     {cart.length > 0 && (
                                         <Badge className="absolute -top-2 -right-2 bg-yellow-500">
-                                            {cart.reduce((sum, item) => sum + item.quantity, 0)}
+                                            {itemCount}
                                         </Badge>
                                     )}
                                 </Button>
@@ -393,10 +580,10 @@ export default function Dashboard({ stats, categorias, productos_recientes, mesa
                                         >
                                             {/* Imagen del Producto */}
                                             <div className="relative h-48 overflow-hidden bg-gray-100">
-                                                <img 
+                                                <LazyImage 
                                                     src={product.image} 
                                                     alt={product.nombre}
-                                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                                                    className="w-full h-full group-hover:scale-110 transition-transform duration-300"
                                                 />
                                                 {product.stock < 10 && (
                                                     <Badge className="absolute top-2 left-2 bg-red-500 text-white">
@@ -468,7 +655,7 @@ export default function Dashboard({ stats, categorias, productos_recientes, mesa
                                             whileHover={{ x: 5 }}
                                             className="bg-white rounded-lg shadow-sm hover:shadow-md transition-all p-4 flex items-center gap-4"
                                         >
-                                            <img 
+                                            <LazyImage 
                                                 src={product.image} 
                                                 alt={product.nombre}
                                                 className="w-20 h-20 rounded-lg object-cover"
@@ -533,7 +720,7 @@ export default function Dashboard({ stats, categorias, productos_recientes, mesa
                                     <div>
                                         <h2 className="text-lg font-bold text-gray-900">Orden Actual</h2>
                                         <p className="text-sm text-gray-500">
-                                            {cart.reduce((sum, item) => sum + item.quantity, 0)} items
+                                            {itemCount} items
                                         </p>
                                     </div>
                                     <Badge variant="outline" className="gap-1">
@@ -563,7 +750,7 @@ export default function Dashboard({ stats, categorias, productos_recientes, mesa
                                                     className="bg-gray-50 rounded-lg p-3"
                                                 >
                                                     <div className="flex items-start gap-3">
-                                                        <img 
+                                                        <LazyImage 
                                                             src={item.image} 
                                                             alt={item.nombre}
                                                             className="w-12 h-12 rounded-lg object-cover"
@@ -620,11 +807,11 @@ export default function Dashboard({ stats, categorias, productos_recientes, mesa
                                     <div className="space-y-2 text-sm">
                                         <div className="flex justify-between">
                                             <span className="text-gray-600">Subtotal</span>
-                                            <span className="font-medium">${getSubtotal().toFixed(2)}</span>
+                                            <span className="font-medium">${getSubtotal.toFixed(2)}</span>
                                         </div>
                                         <div className="flex justify-between">
                                             <span className="text-gray-600">IVA (16%)</span>
-                                            <span className="font-medium">${getTax().toFixed(2)}</span>
+                                            <span className="font-medium">${getTax.toFixed(2)}</span>
                                         </div>
                                         <div className="flex justify-between">
                                             <span className="text-gray-600">Descuento</span>
@@ -634,7 +821,7 @@ export default function Dashboard({ stats, categorias, productos_recientes, mesa
                                         <div className="flex justify-between text-lg font-bold">
                                             <span>Total</span>
                                             <span style={{ color: COLORS.primary }}>
-                                                ${getTotal().toFixed(2)}
+                                                ${getTotal.toFixed(2)}
                                             </span>
                                         </div>
                                     </div>
@@ -644,6 +831,7 @@ export default function Dashboard({ stats, categorias, productos_recientes, mesa
                                         <Button 
                                             className="w-full"
                                             size="lg"
+                                            onClick={procesarPago}
                                             style={{ backgroundColor: COLORS.primary }}
                                         >
                                             Procesar Pago

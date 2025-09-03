@@ -17,6 +17,43 @@
             --primary-color: #E32636;
             --secondary-color: #4d82bc;
         }
+        
+        /* Estilos optimizados para imágenes */
+        .product-image-container {
+            position: relative;
+            overflow: hidden;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: all 0.3s ease;
+        }
+        
+        .product-image:hover {
+            transform: scale(1.05);
+        }
+        
+        .cart-item-image {
+            width: 48px;
+            height: 48px;
+        }
+        
+        .image-placeholder {
+            background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 100%);
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -134,17 +171,19 @@
                             <tr class="hover:bg-gray-50" data-categoria="{{ $producto->categoria_id }}">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-12 w-12">
-                                            @if($producto->imagen)
-                                                <img class="h-12 w-12 rounded-lg object-cover" 
-                                                     src="/{{ $producto->imagen }}" 
-                                                     alt="{{ $producto->nombre }}"
-                                                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%23d1d5db\'%3E%3Cpath d=\'M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zM2 3.993A1 1 0 0 1 2.992 3h18.016c.548 0 .992.445.992.993v16.014a1 1 0 0 1-.992.993H2.992A.993.993 0 0 1 2 20.007V3.993zM8 11l5 6 3-4 4 5H4l4-7z\'/%3E%3C/svg%3E';">
-                                            @else
-                                                <div class="h-12 w-12 rounded-lg bg-gray-100 flex items-center justify-center">
-                                                    <i class="fas fa-image text-gray-400 text-xl"></i>
-                                                </div>
-                                            @endif
+                                        <div class="flex-shrink-0">
+                                            <div class="cart-item-image product-image-container">
+                                                @if($producto->imagen)
+                                                    <img src="/{{ $producto->imagen }}" 
+                                                         alt="{{ $producto->nombre }}"
+                                                         class="product-image"
+                                                         onerror="this.outerHTML='<div class=&quot;image-placeholder cart-item-image&quot;><i class=&quot;fas fa-utensils&quot;></i></div>'">
+                                                @else
+                                                    <div class="image-placeholder cart-item-image">
+                                                        <i class="fas fa-utensils"></i>
+                                                    </div>
+                                                @endif
+                                            </div>
                                         </div>
                                         <div class="ml-4">
                                             <div class="text-sm font-medium text-gray-900">{{ $producto->nombre }}</div>

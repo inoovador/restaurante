@@ -50,6 +50,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Clientes
     Route::get('/clientes', [\App\Http\Controllers\ClienteController::class, 'index'])->name('clientes.index');
     
+    // Pedidos
+    Route::get('/pedidos', [\App\Http\Controllers\PedidoController::class, 'index'])->name('pedidos.index');
+    Route::get('/pedidos/{id}', [\App\Http\Controllers\PedidoController::class, 'show'])->name('pedidos.show');
+    Route::get('/pedidos/{id}/print', [\App\Http\Controllers\PedidoController::class, 'print'])->name('pedidos.print');
+    Route::patch('/pedidos/{id}/estado', [\App\Http\Controllers\PedidoController::class, 'updateStatus'])->name('pedidos.updateStatus');
+    
     // Caja
     Route::get('/caja', [\App\Http\Controllers\CajaController::class, 'index'])->name('caja.index');
     
@@ -60,6 +66,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/compras', [\App\Http\Controllers\ComprasController::class, 'index'])->name('compras.index');
     Route::get('/barra', [\App\Http\Controllers\BarraController::class, 'index'])->name('barra.index');
     Route::get('/cocina', [\App\Http\Controllers\CocinaController::class, 'index'])->name('cocina.index');
+    
+    // Configuración
+    Route::get('/configuracion', [\App\Http\Controllers\ConfiguracionController::class, 'index'])->name('configuracion.index');
+    Route::post('/configuracion', [\App\Http\Controllers\ConfiguracionController::class, 'update'])->name('configuracion.update');
+    
+    // Reportes
+    Route::get('/reportes', [\App\Http\Controllers\ReporteController::class, 'index'])->name('reportes.index');
+    Route::get('/reportes/export', [\App\Http\Controllers\ReporteController::class, 'export'])->name('reportes.export');
+    
+    // API Carrito
+    Route::prefix('api/cart')->group(function () {
+        Route::post('/add', [\App\Http\Controllers\CartController::class, 'addProduct'])->name('api.cart.add');
+        Route::get('/', [\App\Http\Controllers\CartController::class, 'getCart'])->name('api.cart.get');
+        Route::patch('/update', [\App\Http\Controllers\CartController::class, 'updateQuantity'])->name('api.cart.update');
+        Route::delete('/clear', [\App\Http\Controllers\CartController::class, 'clearCart'])->name('api.cart.clear');
+    });
 });
 
 require __DIR__.'/settings.php';
